@@ -1,130 +1,322 @@
+// ============================================================================
+// Core Types
+// ============================================================================
+
 export interface CalendarEvent {
-    id: string;
-    calendarId: string;   // which .ics file / source it came from
-    title: string;        // activity name
-  
-    start: Date;
-    end: Date;
-  
-    durationMinutes: number; // derived: (end - start) in minutes
-    dayOfWeek: number;       // 0–6 (Sun–Sat)
-    dayString: string;       // "YYYY-MM-DD"
-    isAllDay: boolean;
-  }
+  id: string;
+  calendarId: string; // which .ics file / source it came from
+  title: string; // activity name
 
+  start: Date;
+  end: Date;
 
-//Deriving the CalendarEvent from the CreateCalendarEventInput
-
-    //CreateCalendarEventInput is the initial interface from which used to derive CalendarEvent
-    export interface CreateCalendarEventInput  {
-        id: string;
-        calendarId: string;
-        title: string;
-        start: Date;
-        end: Date;
-        isAllDay?: boolean; // optional; default false
-    }
-
-    //CreateCalendarEventInput to CalendarEvent converter (adds durationMinutes, dayOfWeek, dayString, and isAllDay)
-    export function createCalendarEvent(input: CreateCalendarEventInput ): CalendarEvent { 
-        // Destructure input and provide a default for isAllDay so it is always a boolean
-        const {id, calendarId, title, start, end, isAllDay = false} = input;
-
-        const durationMs = end.getTime() - start.getTime();
-        const durationMinutes = Math.round(durationMs / (1000 * 60)); //Ms to Minutes
-
-        const dayOfWeek = start.getDay(); 
-
-        const year = start.getFullYear();
-        const month = String(start.getMonth() + 1).padStart(2, '0');
-        const day = String(start.getDate()).padStart(2, "0");
-        const dayString = `${year}-${month}-${day}`;
-
-        return {
-            id,
-            calendarId,
-            title,
-            start,
-            end,
-            durationMinutes,
-            dayOfWeek,
-            dayString,
-            isAllDay,
-          };
+  durationMinutes: number; // derived: (end - start) in minutes
+  dayOfWeek: number; // 0–6 (Sun–Sat)
+  dayString: string; // "YYYY-MM-DD"
+  isAllDay: boolean;
 }
 
-/////////////////////////////////////////////////
-//Global Stats Calculation
+//initial before derifving durationMinutes, daysOfWeek, dayString, isAllDay
+export interface CreateCalendarEventInput {
+  id: string;
+  calendarId: string;
+  title: string;
+  start: Date;
+  end: Date;
+  isAllDay?: boolean; // optional; default false
+}
+
+// ============================================================================
+// Event Creation
+// ============================================================================
+
+export function createCalendarEvent(
+  input: CreateCalendarEventInput
+): CalendarEvent {
+  const { id, calendarId, title, start, end, isAllDay = false } = input;
+
+  const durationMs = end.getTime() - start.getTime();
+  const durationMinutes = Math.round(durationMs / (1000 * 60)); // ms -> minutes
+
+  const dayOfWeek = start.getDay();
+
+  const year = start.getFullYear();
+  const month = String(start.getMonth() + 1).padStart(2, "0");
+  const day = String(start.getDate()).padStart(2, "0");
+  const dayString = `${year}-${month}-${day}`;
+
+  return {
+    id,
+    calendarId,
+    title,
+    start,
+    end,
+    durationMinutes,
+    dayOfWeek,
+    dayString,
+    isAllDay,
+  };
+}
+
+// ============================================================================
+// Stats Interfaces
+// ============================================================================
+
 export interface GlobalStats {
-    totalCount: number;
-    uniqueActivities: number;
-    totalMinutes: number;
+  totalCount: number;
+  uniqueActivities: number;
+  totalMinutes: number;
 }
 
-//calculates total count, unique activity count, and total minutes.
-    export function computeGlobalStats(events: CalendarEvent[]): GlobalStats {
-        const totalCount = events.length;
-        const uniqueTitles = new Set(events.map(event => event?.title));
-        const uniqueActivities = uniqueTitles.size;
+export interface ActivityStats {
+  name: string; // search string used
 
-        const totalMinutes = events.reduce(
-            (sum, event) => sum + event?.durationMinutes,
-            0
-        );
+  // Basic overview
+  totalCount: number;
+  totalMinutes: number;
+  firstSession: Date | null;
+  lastSession: Date | null;
 
+  // Durations
+  averageSessionMinutes: number;
+  longestSession: {
+    minutes: number;
+    date: Date;
+  } | null;
+
+  // Consistency
+  longestStreak: {
+    days: number;
+    from: Date;
+    to: Date;
+  } | null;
+
+  biggestBreak: {
+    days: number;
+    from: Date;
+    to: Date;
+  } | null;
+}
+
+export interface TimeBreakdown {
+  days: number;
+  hours: number;
+  minutes: number;
+}
+
+// ============================================================================
+// Stats Computation
+// ============================================================================
+
+//Sorts events older --> newest helper
+function sortEventsByDate(
+    events: CalendarEvent[],
+    order: "asc" | "desc" = "asc"
+  ): CalendarEvent[] {
+    const sorted = [...events].sort(
+      (a, b) => a.start.getTime() - b.start.getTime()
+    );
+    return order === "desc" ? sorted.reverse() : sorted;
+}
+
+
+//Global Stats
+export function computeGlobalStats(events: CalendarEvent[]): GlobalStats {
+  const totalCount = events.length;
+  const uniqueTitles = new Set(events.map((event) => event.title));
+  const uniqueActivities = uniqueTitles.size;
+
+  const totalMinutes = events.reduce(
+    (sum, event) => sum + event.durationMinutes,
+    0
+  );
+
+  return {
+    totalCount,
+    uniqueActivities,
+    totalMinutes,
+  };
+}
+
+
+//Activity Stats
+export  function computeActivityStats(
+    events: CalendarEvent[],
+    searchString: string
+) : ActivityStats {
+    //if includes lowercase version of the string, then we keep and add it to activtyEvents
+    const activityEvents = events.filter((event) => 
+        event.title.toLowerCase().includes(searchString.toLowerCase())
+    ); 
+
+    // Handle empty case
+    if (activityEvents.length === 0) {
         return {
-            totalCount,
-            uniqueActivities,
-            totalMinutes,
+        name: searchString,
+        totalCount: 0,
+        totalMinutes: 0,
+        firstSession: null,
+        lastSession: null,
+        averageSessionMinutes: 0,
+        longestSession: null,
+        longestStreak: null,
+        biggestBreak: null,
+        };
+    }
+
+    //Basic Overview Stats
+    const totalCount = activityEvents.length;
+    const totalMinutes = activityEvents.reduce(
+        (sum, event) => sum + event.durationMinutes,
+        0
+    );
+
+    //Sort by date to find first and last session
+    const sortedByDate = sortEventsByDate(activityEvents);
+    const firstSession = sortedByDate[0].start;
+    const lastSession = sortedByDate[sortedByDate.length-1].start
+
+    // Duration stats
+    const averageSessionMinutes = Math.round(totalMinutes / totalCount);
+    
+    // Find the event with the longest duration
+    const longestSessionEvent = activityEvents.reduce((longest, current) =>
+      current.durationMinutes > longest.durationMinutes ? current : longest
+    );
+    //gets minutes and session date from longest event
+    const longestSession = {
+      minutes: longestSessionEvent.durationMinutes,
+      date: longestSessionEvent.start,
+    };
+
+
+    //Consistency Section
+
+    // Longest Streak
+    // Get unique days (sorted chronologically)
+    const uniqueDays = Array.from(
+      new Set(sortedByDate.map((event) => event.dayString))
+    ).sort();
+
+    let longestStreak: { days: number; from: Date; to: Date } | null = null;
+    let currentStreakStart = 0;
+    let currentStreakLength = 1;
+
+    for (let i = 1; i < uniqueDays.length; i++) {
+      const prevDay = new Date(uniqueDays[i - 1]);
+      const currentDay = new Date(uniqueDays[i]);
+      const daysDiff = Math.round(
+        (currentDay.getTime() - prevDay.getTime()) / (1000 * 60 * 60 * 24)
+      );
+
+      if (daysDiff === 1) {
+        // Consecutive day - continue streak
+        currentStreakLength++;
+      } else {
+        // Gap found - check if this streak is longest
+        if (
+          longestStreak === null ||
+          currentStreakLength > longestStreak.days
+        ) {
+          longestStreak = {
+            days: currentStreakLength,
+            from: new Date(uniqueDays[currentStreakStart]),
+            to: new Date(uniqueDays[i - 1]),
+          };
         }
+        // Reset streak
+        currentStreakStart = i;
+        currentStreakLength = 1;
+      }
     }
 
-
-
-//////////////////////////////////////////////////////
-
-//Calculates days, hours, and minutes from total minutes
-    export interface TimeBreakdown {
-        days: number;
-        hours: number;
-        minutes: number;
+    // Check final streak
+    if (
+      longestStreak === null ||
+      currentStreakLength > longestStreak.days
+    ) {
+      longestStreak = {
+        days: currentStreakLength,
+        from: new Date(uniqueDays[currentStreakStart]),
+        to: new Date(uniqueDays[uniqueDays.length - 1]),
+      };
     }
 
-    export function breakdownMinutes(totalMinutes: number): TimeBreakdown {
-        const minutesInDay = 24 * 60;
-        const minutesInHour = 60;
+    // Biggest Break
+    let biggestBreak: { days: number; from: Date; to: Date } | null = null;
 
-        const days = Math.floor(totalMinutes / minutesInDay);
-        const remainingAfterDays = totalMinutes % minutesInDay;
+    for (let i = 1; i < sortedByDate.length; i++) {
+      const prevEvent = sortedByDate[i - 1];
+      const currentEvent = sortedByDate[i];
+      const daysDiff = Math.round(
+        (currentEvent.start.getTime() - prevEvent.start.getTime()) /
+          (1000 * 60 * 60 * 24)
+      );
 
-        const hours = Math.floor(remainingAfterDays / minutesInHour);
-        const minutes = remainingAfterDays % minutesInHour;
-
-        return {
-            days,
-            hours,
-            minutes,
-        }
+      if (
+        biggestBreak === null ||
+        daysDiff > biggestBreak.days
+      ) {
+        biggestBreak = {
+          days: daysDiff,
+          from: prevEvent.start,
+          to: currentEvent.start,
+        };
+      }
     }
+    
 
 
-//formatting the time breakdown into a string 
-    //Days, Hours, Minutes
-    export function formatAsDaysHoursMinutes(totalMinutes: number): string {
-        const {days, hours, minutes} = breakdownMinutes(totalMinutes);
 
-        return `${days} Day${days === 1 ? '' : 's'}, ${hours} Hour${hours === 1 ? '' : 's'}, ${minutes} Minute${minutes === 1 ? '' : 's'}`;
-    }
 
-    //Hours, Minutes
-    export function formatAsHoursMinutes(totalMinutes: number): string {
-        const {days, hours, minutes} = breakdownMinutes(totalMinutes); 
-            const totalHours = days * 24 + hours;
-            return `${totalHours} Hour${totalHours !== 1 ? "s" : ""}, ${minutes} Minute${minutes !== 1 ? "s" : ""}`;
-    }
 
-    //Minutes
-    export function formatAsMinutes(totalMinutes: number): string {
-            return `${totalMinutes} Minute${totalMinutes !== 1 ? "s" : ""}`;
-    }
+    return {
+        name: searchString,
+        totalCount,
+        totalMinutes,
+        firstSession,
+        lastSession,
+        averageSessionMinutes,
+        longestSession,
+        longestStreak,
+        biggestBreak,
+      };
+}
 
+
+// ============================================================================
+// Time Formatting Utilities
+// ============================================================================
+
+export function breakdownMinutes(totalMinutes: number): TimeBreakdown {
+  const minutesInDay = 24 * 60;
+  const minutesInHour = 60;
+
+  const days = Math.floor(totalMinutes / minutesInDay);
+  const remainingAfterDays = totalMinutes % minutesInDay;
+
+  const hours = Math.floor(remainingAfterDays / minutesInHour);
+  const minutes = remainingAfterDays % minutesInHour;
+
+  return {
+    days,
+    hours,
+    minutes,
+  };
+}
+
+export function formatAsDaysHoursMinutes(totalMinutes: number): string {
+  const { days, hours, minutes } = breakdownMinutes(totalMinutes);
+
+  return `${days} Day${days === 1 ? "" : "s"}, ${hours} Hour${hours === 1 ? "" : "s"}, ${minutes} Minute${minutes === 1 ? "" : "s"}`;
+}
+
+export function formatAsHoursMinutes(totalMinutes: number): string {
+  const { days, hours, minutes } = breakdownMinutes(totalMinutes);
+  const totalHours = days * 24 + hours;
+  return `${totalHours} Hour${totalHours !== 1 ? "s" : ""}, ${minutes} Minute${minutes !== 1 ? "s" : ""}`;
+}
+
+export function formatAsMinutes(totalMinutes: number): string {
+  return `${totalMinutes} Minute${totalMinutes !== 1 ? "s" : ""}`;
+}
