@@ -1,12 +1,12 @@
 import Image from "next/image";
-import "@/lib/calendar/stats";
+import "@/lib/calculations/stats";
 import {
   computeGlobalStats,
   formatAsDaysHoursMinutes,
   formatAsHoursMinutes,
   formatAsMinutes,
-} from "@/lib/calendar/stats";
-import { loadLocalCalendars } from "@/lib/calendar/load-local-calendars";
+} from "@/lib/calculations/stats";
+import { loadLocalCalendars } from "@/lib/calculations/load-local-calendars";
 
 export default function Home() {
   const events = loadLocalCalendars([
@@ -77,9 +77,9 @@ export default function Home() {
               </p>
               <p className="text-body-24 text-black">
                 {timeMinutes}
-              </p>
-            </div>
-          </div>
+          </p>
+        </div>
+        </div>
         </section>
       </main>
 

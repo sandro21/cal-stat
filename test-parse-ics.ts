@@ -1,13 +1,13 @@
 import fs from "fs";
 import path from "path";
-import { parseIcsToEvents } from "./src/lib/calendar/parse-ics";
+import { parseIcsToEvents } from "./src/lib/calculations/parse-ics";
 import {
   computeGlobalStats,
   formatAsDaysHoursMinutes,
   formatAsHoursMinutes,
   formatAsMinutes,
-} from "./src/lib/calendar/stats";
-import { loadLocalCalendars } from "./src/lib/calendar/load-local-calendars";
+} from "./src/lib/calculations/stats";
+import { loadLocalCalendars } from "./src/lib/calculations/load-local-calendars";
 
 async function main() {
   const events = loadLocalCalendars([
@@ -25,7 +25,7 @@ async function main() {
   console.log("Minutes:", formatAsMinutes(stats.totalMinutes));
 
   // Test time filtering
-  const { filterByTimeRange, filterByCalendars } = await import("./src/lib/calendar/filter");
+  const { filterByTimeRange, filterByCalendars } = await import("./src/lib/calculations/filter");
   const filtered = filterByTimeRange(events, { type: "month", year: 2025, month: 7 });
   console.log("\n--- Time Filter Test ---");
   console.log("Total events:", events.length);
