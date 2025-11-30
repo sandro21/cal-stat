@@ -6,6 +6,7 @@ import {
   formatAsMinutes,
 } from "@/lib/calculations/stats";
 import { loadLocalCalendars } from "@/lib/calculations/load-local-calendars";
+import { ContributionsCalendar } from "@/components/ContributionsCalendar";
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', { 
@@ -27,6 +28,11 @@ export default function ActivityPage() {
   ]);
 
   const activityStats = computeActivityStats(events, searchString);
+  
+  // Filter events for the contributions calendar
+  const filteredEvents = events.filter((event) =>
+    event.title.toLowerCase().includes(searchString.toLowerCase())
+  );
 
   const timeDaysHoursMinutes = formatAsDaysHoursMinutes(activityStats.totalMinutes);
   const timeHoursMinutes = formatAsHoursMinutes(activityStats.totalMinutes);
@@ -130,13 +136,10 @@ export default function ActivityPage() {
           </h2>
 
           {/* grid of cards */}
-          <div className="grid grid-cols-[1.5fr_1.5fr_3fr] grid-rows-[200px_160px] gap-3">
-            {/* GitHub Style Checker Placeholder (spans all 3 columns) */}
+          <div className="grid grid-cols-[1.5fr_1.5fr_3fr] grid-rows-[250px_160px] gap-3">
+            {/* GitHub Style Contributions Calendar (spans all 3 columns) */}
             <div className="card-soft col-span-3">
-              <h3 className="text-card-title">GitHub Style Checker</h3>
-              <div className="mt-4 text-body-24 text-[color:var(--gray)]">
-                [Placeholder]
-              </div>
+              <ContributionsCalendar events={filteredEvents} />
             </div>
 
             {/* Longest Streak */}

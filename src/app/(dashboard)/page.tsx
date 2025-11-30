@@ -114,11 +114,11 @@ export default function Home() {
           <div className="grid grid-cols-[3fr_1fr] auto-rows-[300px] gap-3">
             
             {/* Top Activities Table */}
-            <div className="card-soft flex flex-col px-8 py-4">
+            <div className="card-soft flex flex-col px-8 py-4 text-left">
               <div className="flex-1 overflow-hidden">
                 <table className="table-fixed w-full">
                   <thead>
-                    <tr className="border-b border-[color:var(--gray)]/20">
+                    <tr className="border-b border-[color:var(--gray)]/20 text-left">
                       <th className="pb-1 text-left text-body-24 text-[color:var(--gray)] w-[33%] pr-4">Name</th>
                       <th className="pb-1 text-left text-body-24 text-[color:var(--gray)] w-[20%] pr-4">Duration</th>
                       <th className="pb-1 text-left text-body-24 text-[color:var(--gray)] w-[15%] pr-4">Count</th>
@@ -139,20 +139,20 @@ export default function Home() {
                       const rowColor = redColors[index] || 'text-[color:var(--red-5)]';
                       
                       return (
-                        <tr key={activity.name} className="text-body-24 border-b border-[color:var(--gray)]/10 last:border-0">
-                          <td className={`py-2 text-body-24 font-semibold pr-4 truncate ${rowColor}`} title={activity.name}>
+                        <tr key={activity.name} className="text-body-24 border-b border-[color:var(--gray)]/10 last:border-0 text-left">
+                          <td className={`py-2 text-body-24 font-semibold pr-4 truncate text-left ${rowColor}`} title={activity.name}>
                             {activity.name}
                           </td>
-                          <td className={`py-2 text-body-24 ${rowColor}`}>
+                          <td className={`py-2 text-body-24 text-left ${rowColor}`}>
                             {formatAsCompactHoursMinutes(activity.totalMinutes)}
                           </td>
-                          <td className={`py-2 text-body-24 ${rowColor}`}>
+                          <td className={`py-2 text-body-24 text-left ${rowColor}`}>
                             {activity.count}
                           </td>
-                          <td className={`py-2 text-body-24 ${rowColor}`}>
+                          <td className={`py-2 text-body-24 text-left ${rowColor}`}>
                             {formatAsCompactHoursMinutes(activity.averageSessionMinutes)}
                           </td>
-                          <td className={`py-2 text-body-24 ${rowColor}`}>
+                          <td className={`py-2 text-body-24 text-left ${rowColor}`}>
                             {formatAsCompactHoursMinutes(activity.longestSessionMinutes)}
                           </td>
                         </tr>
