@@ -152,9 +152,9 @@ export  function computeActivityStats(
     events: CalendarEvent[],
     searchString: string
 ) : ActivityStats {
-    //if includes lowercase version of the string, then we keep and add it to activtyEvents
+    // Match exact title (case-insensitive) to match dashboard behavior
     const activityEvents = events.filter((event) => 
-        event.title.toLowerCase().includes(searchString.toLowerCase())
+        event.title.toLowerCase() === searchString.toLowerCase()
     ); 
 
     // Handle empty case
@@ -407,4 +407,20 @@ export function formatAsHoursMinutes(totalMinutes: number): string {
 
 export function formatAsMinutes(totalMinutes: number): string {
   return `${totalMinutes} Minute${totalMinutes !== 1 ? "s" : ""}`;
+}
+
+// Compact format: "20h 32m" or "70m" (for durations < 1 hour)
+export function formatAsCompactHoursMinutes(totalMinutes: number): string {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  
+  if (hours === 0) {
+    return `${minutes}m`;
+  }
+  
+  if (minutes === 0) {
+    return `${hours}h`;
+  }
+  
+  return `${hours}h ${minutes}m`;
 }

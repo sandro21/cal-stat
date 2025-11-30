@@ -34,6 +34,7 @@ body {
   font-size: 40px;
   line-height: 1.1;
   font-weight: 600;
+  margin-bottom: 25px;
 }
 
 .text-card-title {
@@ -42,8 +43,20 @@ body {
   font-weight: 600;
 }
 
+.text-card-title-sm {
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 600;
+}
+
 .text-number-large {
   font-size: 60px;
+  line-height: 1.1;
+  font-weight: 600;
+}
+
+.text-number-medium {
+  font-size: 50px;
   line-height: 1.1;
   font-weight: 600;
 }
@@ -84,7 +97,3 @@ body {
   left: -80px;
 }
 
-.bg-blobs::after {
-  bottom: -140px;
-  right: -60px;
-  }
