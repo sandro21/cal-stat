@@ -26,9 +26,6 @@
   --black: black;
 }
 
-body {
-  /* Urbanist is applied via next/font in layout.tsx */
-}
 
 .text-section-header {
   font-size: 40px;
@@ -41,6 +38,7 @@ body {
   font-size: 32px;
   line-height: 1.1;
   font-weight: 600;
+  color: var(--black);
 }
 
 .text-card-title-sm {
@@ -52,13 +50,15 @@ body {
 .text-number-large {
   font-size: 60px;
   line-height: 1.1;
-  font-weight: 600;
+  font-weight: 700;
+  margin-top: 16px;
 }
 
 .text-number-medium {
-  font-size: 50px;
+  font-size: 40px;
   line-height: 1.1;
   font-weight: 600;
+  margin-top: 10px;
 }
 
 .text-body-24 {
@@ -67,11 +67,26 @@ body {
   font-weight: 600;
 }
 
+.text-date {
+  font-size: 21px;
+  line-height: 1.1;
+  font-weight: 600;
+  color: var(--gray);
+  margin-top: 6px;
+}
+
 .card-soft {
   border-radius: var(--card-radius-lg);
   background: var(--card-bg);
   box-shadow: var(--card-shadow);
   backdrop-filter: blur(var(--card-backdrop-blur));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
 /* Soft red background blobs */
