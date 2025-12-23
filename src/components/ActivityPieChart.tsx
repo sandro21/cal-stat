@@ -13,22 +13,49 @@ interface ActivityPieChartProps {
 }
 
 const COLORS = [
-  "var(--red-1)",
-  "var(--red-2)",
-  "var(--red-3)",
-  "var(--red-4)",
-  "var(--red-5)",
-  "gray", // For "Other"
+  "#DB1E18", // Red
+  "#3B82F6", // Blue
+  "#10B981", // Green
+  "#A855F7", // Purple
+  "#F97316", // Orange
+  "#A0A0A0", // Gray for "Other"
 ];
 
+// Custom tooltip
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0];
+    return (
+      <div className="bg-white p-2 border border-gray-200 rounded shadow-lg">
+        <p className="text-sm font-semibold text-black">{data.name}</p>
+        <p className="text-sm text-[color:var(--red-1)]">
+          {formatAsCompactHoursMinutes(data.value)}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 export function ActivityPieChart({ data }: ActivityPieChartProps) {
+  if (data.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full text-[color:var(--gray)]">
+        No data available
+      </div>
+    );
+  }
+
   return (
-    <div className="flex-1 flex items-center justify-center">
-      <ResponsiveContainer>
+    <div className="flex-1 flex items-center justify-center w-full h-full">
+      <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
-            data={data}
-            labelLine={true}
+            data={data as any}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            outerRadius={110}
             fill="#8884d8"
             dataKey="value"
           >
@@ -36,9 +63,7 @@ export function ActivityPieChart({ data }: ActivityPieChartProps) {
               <Cell key={`cell-${index}`} fill={COLORS[index]} />
             ))}
           </Pie>
-          <Tooltip 
-            formatter={(value: number) => formatAsCompactHoursMinutes(value)}
-          />
+          <Tooltip content={<CustomTooltip />} />
         </PieChart>
       </ResponsiveContainer>
     </div>

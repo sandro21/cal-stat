@@ -11,6 +11,7 @@ import {
 import { loadLocalCalendars } from "@/lib/calculations/load-local-calendars";
 import { ActivityPieChart } from "@/components/ActivityPieChart";
 import { LoggingProgressChart } from "@/components/LoggingProgressChart";
+import { TopActivitiesChart } from "@/components/TopActivitiesChart";
 
 export default function Home() {
   const events = loadLocalCalendars([
@@ -112,7 +113,7 @@ export default function Home() {
           </h2>
 
           {/* grid of cards */}
-          <div className="grid grid-cols-[3fr_1fr] auto-rows-[300px] gap-3">
+          <div className="grid grid-cols-[3fr_2fr] grid-rows-[300px_300px] gap-3">
             
             {/* Top Activities Table */}
             <div className="card-soft flex flex-col px-8 py-4 text-left">
@@ -130,19 +131,19 @@ export default function Home() {
 
                   <tbody>
                     {topActivities.map((activity, index) => {
-                      const redColors = [
-                        'text-[color:var(--red-1)]',
-                        'text-[color:var(--red-2)]',
-                        'text-[color:var(--red-3)]',
-                        'text-[color:var(--red-4)]',
-                        'text-[color:var(--red-5)]',
+                      const colors = [
+                        'text-[#DB1E18]', // Red
+                        'text-[#3B82F6]', // Blue
+                        'text-[#10B981]', // Green
+                        'text-[#A855F7]', // Purple
+                        'text-[#F97316]', // Orange
                       ];
-                      const rowColor = redColors[index] || 'text-[color:var(--red-5)]';
+                      const rowColor = colors[index] || 'text-[#F97316]';
                       
                       return (
                         <tr key={activity.name} className="text-body-24 border-b border-[color:var(--gray)]/10 last:border-0 text-left">
                           <td className={`py-2 text-body-24 font-semibold pr-4 truncate text-left ${rowColor}`} title={activity.name}>
-                            {activity.name}
+                            {index + 1}. {activity.name}
                           </td>
                           <td className={`py-2 text-body-24 text-left ${rowColor}`}>
                             {formatAsCompactHoursMinutes(activity.totalMinutes)}
@@ -169,9 +170,12 @@ export default function Home() {
               <ActivityPieChart data={pieChartData} />
             </div>
 
-            {/* Bottom element spanning 2 columns */}
-            <div className="card-soft col-span-2 flex flex-col items-center justify-center text-center px-6">
-              <h3 className="text-card-title text-black">Placeholder</h3>
+            {/* Bottom element spanning 2 columns - Top Activities Over Time */}
+            <div className="card-soft row-span-2 col-span-2 flex flex-col px-8 py-6 text-left">
+              <h3 className="text-card-title mb-4">Top Activities Over Time</h3>
+              <div className="flex-1 min-h-0 w-full">
+                <TopActivitiesChart events={events} topActivities={topActivities} />
+              </div>
             </div>
           </div>
         </section>
