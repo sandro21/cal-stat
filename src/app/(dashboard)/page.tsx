@@ -12,6 +12,9 @@ import { loadLocalCalendars } from "@/lib/calculations/load-local-calendars";
 import { ActivityPieChart } from "@/components/ActivityPieChart";
 import { LoggingProgressChart } from "@/components/LoggingProgressChart";
 import { TopActivitiesChart } from "@/components/TopActivitiesChart";
+import { DayOfWeekChart } from "@/components/DayOfWeekChart";
+import { ActivityDurationChart } from "@/components/ActivityDurationChart";
+import { TimeOfDayChart } from "@/components/TimeOfDayChart";
 
 export default function Home() {
   const events = loadLocalCalendars([
@@ -104,6 +107,44 @@ export default function Home() {
 
 
 
+        {/* Habits */}
+        <section className="space-y-[40px]">
+
+          {/* header */}
+          <h2 className="text-section-header text-black mb-4">
+            Habits
+          </h2>
+
+          {/* grid of cards */}
+          <div className="grid grid-cols-[2fr_1fr] auto-rows-[310px-280px] gap-3">
+            
+            {/* Left side - Top card */}
+            <div className="card-soft flex flex-col px-8 py-6">
+              <h3 className="text-card-title mb-4">Day of Week</h3>
+              <div className="flex-1 min-h-0 w-full">
+                <DayOfWeekChart events={events} />
+              </div>
+            </div>
+
+            {/* Right side - Square card spanning 2 rows */}
+            <div className="card-soft row-span-2 flex flex-col px-8 py-6">
+              <h3 className="text-card-title mb-4">Time of Day</h3>
+              <div className="flex-1 min-h-0 w-full">
+                <TimeOfDayChart events={events} />
+              </div>
+            </div>
+
+            {/* Left side - Bottom card */}
+            <div className="card-soft flex flex-col px-3 py-3">
+              <h3 className="text-card-title mb-4">Activity Duration</h3>
+              <div className="flex-1 min-h-0 w-full">
+                <ActivityDurationChart events={events} />
+              </div>
+            </div>
+
+          </div>
+        </section>
+
         {/* Top Activities */}
         <section className="space-y-[40px]">
 
@@ -177,41 +218,6 @@ export default function Home() {
                 <TopActivitiesChart events={events} topActivities={topActivities} />
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Habits */}
-        <section className="space-y-[40px]">
-
-          {/* header */}
-          <h2 className="text-section-header text-black mb-4">
-            Habits
-          </h2>
-
-          {/* grid of cards */}
-          <div className="grid grid-cols-[2fr_1fr] auto-rows-[200px] gap-3">
-            
-            {/* Left side - Top card */}
-            <div className="card-soft">
-              <div className="h-full flex flex-col items-center justify-center text-center px-6">
-                <h3 className="text-card-title text-black">Placeholder</h3>
-              </div>
-            </div>
-
-            {/* Right side - Square card spanning 2 rows */}
-            <div className="card-soft row-span-2">
-              <div className="h-full flex flex-col items-center justify-center text-center px-6">
-                <h3 className="text-card-title text-black">Placeholder</h3>
-              </div>
-            </div>
-
-            {/* Left side - Bottom card */}
-            <div className="card-soft">
-              <div className="h-full flex flex-col items-center justify-center text-center px-6">
-                <h3 className="text-card-title text-black">Placeholder</h3>
-              </div>
-            </div>
-
           </div>
         </section>
         </section>
