@@ -99,7 +99,7 @@ export function ActivityDurationChart({ events }: ActivityDurationChartProps) {
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={chartData}
-          margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
           <XAxis
@@ -110,6 +110,9 @@ export function ActivityDurationChart({ events }: ActivityDurationChartProps) {
           <YAxis
             stroke="#3B3C40"
             style={{ fontSize: '12px' }}
+            width={30}
+            tick={{ fontSize: 12 }}
+            axisLine={false}
           />
           <Bar
             dataKey="count"
@@ -125,4 +128,5 @@ export function ActivityDurationChart({ events }: ActivityDurationChartProps) {
     </div>
   );
 }
+
 

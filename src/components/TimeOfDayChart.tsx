@@ -299,11 +299,11 @@ export function TimeOfDayChart({ events }: TimeOfDayChartProps) {
       {/* Tooltip */}
       {hoveredHour !== null && tooltipPosition && (
         <div
-          className="absolute bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-lg p-3 shadow-lg z-10 pointer-events-none"
+          className="absolute bg-white/70 backdrop-blur-sm border border-gray-200/30 rounded-xl p-3 shadow-lg z-10 pointer-events-none"
           style={{
-            left: `${tooltipPosition.x}px`,
+            left: `${tooltipPosition.x - 120}px`,
             top: `${tooltipPosition.y - 60}px`,
-            transform: 'translateX(-50%)',
+            minWidth: '150px',
           }}
         >
           <div className="text-center">

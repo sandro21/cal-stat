@@ -24,6 +24,11 @@ const COLORS = [
   "#10B981", // Green
   "#A855F7", // Purple
   "#F97316", // Orange
+  "#EC4899", // Pink
+  "#14B8A6", // Teal
+  "#F59E0B", // Amber
+  "#8B5CF6", // Violet
+  "#EF4444", // Light Red
 ];
 
 export function TopActivitiesChart({ events, topActivities }: TopActivitiesChartProps) {
@@ -160,11 +165,11 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
   };
 
   // Find the topmost point (highest value across all activities)
-  const topmostPoint = useMemo(() => {
+  const topmostPoint = useMemo<Record<string, any> | null>(() => {
     if (chartData.length === 0) return null;
     
     let maxValue = 0;
-    let topmostDataPoint = null;
+    let topmostDataPoint: Record<string, any> | null = null;
     
     chartData.forEach((point) => {
       topActivities.forEach((activity) => {
@@ -190,6 +195,10 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
     const containerRect = container.getBoundingClientRect();
     
     // Find the index of the topmost point in chartData
+    if (!topmostPoint) {
+      setTooltipPosition(null);
+      return;
+    }
     const topmostIndex = chartData.findIndex(d => d.date === topmostPoint.date);
     if (topmostIndex === -1) {
       setTooltipPosition(null);
@@ -288,7 +297,7 @@ export function TopActivitiesChart({ events, topActivities }: TopActivitiesChart
       <ResponsiveContainer width="100%" height="100%">
         <LineChart 
           data={chartData} 
-          margin={{ top: 5, right: 20, left: 0, bottom: 40 }}
+          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
           onMouseLeave={() => {
             setHoveredData(null);
           }}

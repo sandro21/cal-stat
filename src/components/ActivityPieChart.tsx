@@ -18,6 +18,11 @@ const COLORS = [
   "#10B981", // Green
   "#A855F7", // Purple
   "#F97316", // Orange
+  "#EC4899", // Pink
+  "#14B8A6", // Teal
+  "#F59E0B", // Amber
+  "#8B5CF6", // Violet
+  "#EF4444", // Light Red
   "#A0A0A0", // Gray for "Other"
 ];
 
@@ -26,7 +31,7 @@ const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="bg-white p-2 border border-gray-200 rounded shadow-lg">
+      <div className="bg-white/70 backdrop-blur-sm border border-gray-200/30 rounded-xl p-3 shadow-lg">
         <p className="text-sm font-semibold text-black">{data.name}</p>
         <p className="text-sm text-[color:var(--red-1)]">
           {formatAsCompactHoursMinutes(data.value)}

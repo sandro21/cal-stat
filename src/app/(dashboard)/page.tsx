@@ -10,7 +10,7 @@ import {
 } from "@/lib/calculations/stats";
 import { loadLocalCalendars } from "@/lib/calculations/load-local-calendars";
 import { ActivityPieChart } from "@/components/ActivityPieChart";
-import { LoggingProgressChart } from "@/components/LoggingProgressChart";
+import { TimeLoggedChart } from "@/components/TimeLoggedChart";
 import { TopActivitiesChart } from "@/components/TopActivitiesChart";
 import { DayOfWeekChart } from "@/components/DayOfWeekChart";
 import { ActivityDurationChart } from "@/components/ActivityDurationChart";
@@ -23,15 +23,16 @@ export default function Home() {
   ]);
 
   const stats = computeGlobalStats(events);
-  const topActivities = computeTopActivities(events, "time", 5);
+  const topActivities = computeTopActivities(events, "time", 10);
+  const topActivitiesForChart = computeTopActivities(events, "time", 10);
 
-  // Calculate "Other" category (all activities not in top 5)
-  const top5TotalMinutes = topActivities.reduce((sum, activity) => sum + activity.totalMinutes, 0);
-  const otherMinutes = stats.totalMinutes - top5TotalMinutes;
+  // Calculate "Other" category (all activities not in top 10)
+  const top10TotalMinutes = topActivitiesForChart.reduce((sum, activity) => sum + activity.totalMinutes, 0);
+  const otherMinutes = stats.totalMinutes - top10TotalMinutes;
 
   // Prepare pie chart data
   const pieChartData = [
-    ...topActivities.map((activity) => ({
+    ...topActivitiesForChart.map((activity) => ({
       name: activity.name,
       value: activity.totalMinutes,
     })),
@@ -85,7 +86,7 @@ export default function Home() {
             <div className="card-soft row-span-2 flex flex-col px-8 py-6 text-left">
               <h3 className="text-card-title mb-4">Logging Progress</h3>
               <div className="flex-1 min-h-0 w-full">
-                <LoggingProgressChart events={events} />
+                <TimeLoggedChart events={events} />
               </div>
             </div>
 
@@ -158,7 +159,7 @@ export default function Home() {
             
             {/* Top Activities Table */}
             <div className="card-soft flex flex-col px-8 py-4 text-left">
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 overflow-y-auto overflow-x-hidden">
                 <table className="table-fixed w-full">
                   <thead>
                     <tr className="border-b border-[color:var(--gray)]/20 text-left">
@@ -178,6 +179,11 @@ export default function Home() {
                         'text-[#10B981]', // Green
                         'text-[#A855F7]', // Purple
                         'text-[#F97316]', // Orange
+                        'text-[#EC4899]', // Pink
+                        'text-[#14B8A6]', // Teal
+                        'text-[#F59E0B]', // Amber
+                        'text-[#8B5CF6]', // Violet
+                        'text-[#EF4444]', // Light Red
                       ];
                       const rowColor = colors[index] || 'text-[#F97316]';
                       
@@ -215,7 +221,7 @@ export default function Home() {
             <div className="card-soft row-span-2 col-span-2 flex flex-col px-8 py-6 text-left">
               <h3 className="text-card-title mb-4">Top Activities Over Time</h3>
               <div className="flex-1 min-h-0 w-full">
-                <TopActivitiesChart events={events} topActivities={topActivities} />
+                <TopActivitiesChart events={events} topActivities={topActivitiesForChart} />
               </div>
             </div>
           </div>
