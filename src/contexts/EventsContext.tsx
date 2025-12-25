@@ -25,9 +25,27 @@ export function EventsProvider({
       const storedCalendars = JSON.parse(localStorage.getItem('uploadedCalendars') || '[]');
       const allEvents: CalendarEvent[] = [];
       
+      // Load title mappings from processing (original title -> processed title)
+      const titleMappings = JSON.parse(localStorage.getItem('activityTitleMappings') || '{}');
+      
+      // Load removed event IDs
+      const removedEventIds = new Set(JSON.parse(localStorage.getItem('removedEventIds') || '[]'));
+      
       for (const calendar of storedCalendars) {
         const events = parseIcsToEventsBrowser(calendar.icsText, calendar.id);
-        allEvents.push(...events);
+        
+        // Apply title mappings and filter removed events
+        const processedEvents = events
+          .filter((event) => !removedEventIds.has(event.id))
+          .map((event) => {
+            const mappedTitle = titleMappings[event.title];
+            if (mappedTitle) {
+              return { ...event, title: mappedTitle };
+            }
+            return event;
+          });
+        
+        allEvents.push(...processedEvents);
       }
       
       return allEvents;

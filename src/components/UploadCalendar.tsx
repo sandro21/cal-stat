@@ -75,24 +75,23 @@ export function UploadCalendar({ onUploadComplete }: UploadCalendarProps) {
         return;
       }
 
-      // Store all new calendars in localStorage
-      const storedCalendars = JSON.parse(localStorage.getItem('uploadedCalendars') || '[]');
-      storedCalendars.push(...newCalendars);
-      localStorage.setItem('uploadedCalendars', JSON.stringify(storedCalendars));
-
-      // Refresh events in context
-      refreshEvents();
-      
-      // Callback with all events
-      onUploadComplete(allEvents);
+      // Store new calendars temporarily for processing
+      // We'll save to permanent storage after user processes the data
+      const processingData = {
+        newCalendars,
+        events: allEvents,
+        uploadedAt: new Date().toISOString(),
+      };
+      sessionStorage.setItem('processingCalendars', JSON.stringify(processingData));
       
       // Show warning if some files failed
       if (errors.length > 0) {
-        setError(`Some files had issues: ${errors.join(', ')}. ${allEvents.length} events loaded successfully.`);
+        // Store errors in sessionStorage too
+        sessionStorage.setItem('uploadErrors', JSON.stringify(errors));
       }
       
-      // Navigate to all-activity page
-      router.push('/all-activity');
+      // Navigate to process page
+      router.push('/process');
     } catch (err) {
       console.error('Error processing files:', err);
       setError("Failed to process calendar files. Please ensure they are valid .ics files.");

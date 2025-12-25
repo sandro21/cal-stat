@@ -9,8 +9,8 @@ import { usePathname } from "next/navigation";
 export function GlobalFilterBar() {
   const pathname = usePathname();
   
-  // Hide filter bar on upload page
-  if (pathname === "/upload") {
+  // Hide filter bar on upload and process pages
+  if (pathname === "/upload" || pathname === "/process") {
     return null;
   }
   const {
