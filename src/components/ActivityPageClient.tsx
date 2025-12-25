@@ -149,7 +149,7 @@ export function ActivityPageClient({ events, searchString, timeFilter }: Activit
         </div>
 
         {/* grid of cards */}
-        <div className="grid grid-cols-[.9fr_1.1fr_3fr] auto-rows-[200px] gap-3">
+        <div className="grid grid-cols-[1fr_1.1fr_3fr] auto-rows-[200px] gap-3">
           {/* 1. Top left - Total Count (spans 1 col) */}
           <div className="card-soft">
             <h3 className="text-card-title">Total Count</h3>
@@ -245,50 +245,52 @@ export function ActivityPageClient({ events, searchString, timeFilter }: Activit
         </div>
       </section>
 
-      {/* Consistency Section */}
-      <section>
-        <h2 className="text-section-header">
-          Consistency
-        </h2>
+      {/* Consistency Section - Only show for Year filter */}
+      {selectedFilter === "Year" && (
+        <section>
+          <h2 className="text-section-header">
+            Consistency
+          </h2>
 
-        {/* grid of cards */}
-        <div className="grid grid-cols-[1.5fr_1.5fr_3fr] grid-rows-[250px_160px] gap-3">
-          {/* GitHub Style Contributions Calendar (spans all 3 columns) */}
-          <div className="card-soft col-span-3">
-            <ContributionsCalendar events={filteredEvents} />
-          </div>
-
-          {/* Longest Streak */}
-          <div className="card-soft">
-            <h3 className="text-card-title">Longest Streak</h3>
-            <div className="text-number-medium text-[color:var(--red-1)]">
-              {activityStats.longestStreak 
-                ? `${activityStats.longestStreak.days} days`
-                : "N/A"}
+          {/* grid of cards */}
+          <div className="grid grid-cols-[1.5fr_1.5fr_3fr] grid-rows-[250px_160px] gap-3">
+            {/* GitHub Style Contributions Calendar (spans all 3 columns) */}
+            <div className="card-soft col-span-3">
+              <ContributionsCalendar events={filteredEvents} />
             </div>
-            {activityStats.longestStreak && (
-              <p className="text-date">
-                {formatDate(activityStats.longestStreak.from)} - {formatDate(activityStats.longestStreak.to)}
-              </p>
-            )}
-          </div>
 
-          {/* Biggest Break */}
-          <div className="card-soft">
-            <h3 className="text-card-title">Biggest Break</h3>
-            <div className="text-number-medium text-[color:var(--red-1)]">
-              {activityStats.biggestBreak 
-                ? `${activityStats.biggestBreak.days} days`
-                : "N/A"}
+            {/* Longest Streak */}
+            <div className="card-soft">
+              <h3 className="text-card-title">Longest Streak</h3>
+              <div className="text-number-medium text-[color:var(--red-1)]">
+                {activityStats.longestStreak 
+                  ? `${activityStats.longestStreak.days} days`
+                  : "N/A"}
+              </div>
+              {activityStats.longestStreak && (
+                <p className="text-date">
+                  {formatDate(activityStats.longestStreak.from)} - {formatDate(activityStats.longestStreak.to)}
+                </p>
+              )}
             </div>
-            {activityStats.biggestBreak && (
-              <p className="text-date">
-                {formatDate(activityStats.biggestBreak.from)} - {formatDate(activityStats.biggestBreak.to)}
-              </p>
-            )}
+
+            {/* Biggest Break */}
+            <div className="card-soft">
+              <h3 className="text-card-title">Biggest Break</h3>
+              <div className="text-number-medium text-[color:var(--red-1)]">
+                {activityStats.biggestBreak 
+                  ? `${activityStats.biggestBreak.days} days`
+                  : "N/A"}
+              </div>
+              {activityStats.biggestBreak && (
+                <p className="text-date">
+                  {formatDate(activityStats.biggestBreak.from)} - {formatDate(activityStats.biggestBreak.to)}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Habits Section */}
       <section>

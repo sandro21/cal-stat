@@ -4,8 +4,15 @@ import { Upload, Filter } from "lucide-react";
 import { useFilter } from "@/contexts/FilterContext";
 import { ActivitySearch } from "@/components/ActivitySearch";
 import { useEvents } from "@/contexts/EventsContext";
+import { usePathname } from "next/navigation";
 
 export function GlobalFilterBar() {
+  const pathname = usePathname();
+  
+  // Hide filter bar on upload page
+  if (pathname === "/upload") {
+    return null;
+  }
   const {
     selectedFilter,
     setSelectedFilter,
