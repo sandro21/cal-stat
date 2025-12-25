@@ -316,13 +316,15 @@ export function ActivityPageClient({ events, searchString, timeFilter }: Activit
             </div>
           </div>
 
-          {/* Peak Month */}
-          <div className="card-soft col-span-2 flex flex-col px-6 py-4">
-            <h3 className="text-card-title mb-2">Peak Month</h3>
-            <div className="flex-1 min-h-0 w-full">
-              <ActivityPeakMonthChart events={filteredEvents} />
+          {/* Peak Month - Hide for Month filter */}
+          {selectedFilter !== "Month" && (
+            <div className="card-soft col-span-2 flex flex-col px-6 py-4">
+              <h3 className="text-card-title mb-2">Peak Month</h3>
+              <div className="flex-1 min-h-0 w-full">
+                <ActivityPeakMonthChart events={filteredEvents} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
     </>
