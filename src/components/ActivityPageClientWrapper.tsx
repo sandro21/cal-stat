@@ -24,3 +24,5 @@ export function ActivityPageClientWrapper({ searchString, timeFilter }: Activity
   );
 }
 
+
+
