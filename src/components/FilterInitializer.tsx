@@ -34,3 +34,5 @@ export function FilterInitializer({ events }: FilterInitializerProps) {
   return null;
 }
 
+
+
