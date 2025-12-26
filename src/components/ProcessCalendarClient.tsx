@@ -318,7 +318,7 @@ export function ProcessCalendarClient({ events: contextEvents }: ProcessCalendar
           Data Quality
         </button>
         <button
-          onClick={appliedMerges.size > 0 || removedEventIds.size > 0 ? handleSaveAndContinue : () => router.push('/all-activity')}
+          onClick={appliedMerges.size > 0 || removedEventIds.size > 0 ? handleSaveAndContinue : handleSkip}
           disabled={isProcessing}
           className="px-6 py-2 rounded-full text-body-24 bg-[color:var(--red-1)] text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
