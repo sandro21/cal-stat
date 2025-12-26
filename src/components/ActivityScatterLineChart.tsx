@@ -58,7 +58,7 @@ export function ActivityScatterLineChart({ events }: ActivityScatterLineChartPro
     const filteredEvents = events.filter(event => event.start <= today);
     
     if (filteredEvents.length === 0) {
-      return { lineData: [], scatterData: [], allDays: [], monthLabels: new Map() };
+      return { lineData: [] as WeekData[], scatterData: [] as ScatterPoint[], allDays: [] as string[], monthLabels: new Map<string, string>() };
     }
 
     // Group events by week for line (weekly averages)
@@ -241,7 +241,9 @@ export function ActivityScatterLineChart({ events }: ActivityScatterLineChartPro
             fill="var(--red-1)"
             fillOpacity={0.6}
             shape={(props: any) => {
-              if (!props.cx || !props.cy || !props.payload || props.payload.minutes === null) return null;
+              if (!props.cx || !props.cy || !props.payload || props.payload.minutes === null) {
+                return <g />;
+              }
               return (
                 <circle
                   cx={props.cx}

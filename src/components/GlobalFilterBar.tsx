@@ -2,7 +2,7 @@
 
 import { Trash2 } from "lucide-react";
 import { useFilter } from "@/contexts/FilterContext";
-import { ActivitySearch } from "@/components/ActivitySearch";
+import { ActivitySearchWrapper } from "@/components/ActivitySearchWrapper";
 import { useEvents } from "@/contexts/EventsContext";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -224,7 +224,7 @@ export function GlobalFilterBar() {
 
       {/* Right: Search Activity */}
       <div className="flex-1 flex items-start justify-end">
-        <ActivitySearch events={events} />
+        <ActivitySearchWrapper events={events} />
       </div>
     </div>
   );
