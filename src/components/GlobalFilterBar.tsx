@@ -10,11 +10,11 @@ export function GlobalFilterBar() {
   const pathname = usePathname();
   const router = useRouter();
   
-  // Hide filter bar on upload, process, and privacy pages
-  if (pathname === "/upload" || pathname === "/process" || pathname === "/privacy") {
+  // Hide filter bar on upload, process, privacy, and terms pages
+  if (pathname === "/upload" || pathname === "/process" || pathname === "/privacy" || pathname === "/terms") {
     return null;
   }
-  const {
+  const {//love
     selectedFilter,
     setSelectedFilter,
     currentYear,
