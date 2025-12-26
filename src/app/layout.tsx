@@ -14,6 +14,24 @@ const urbanist = Urbanist({
 export const metadata: Metadata = {
   title: "MyCalendarStats - Visualize Your Time",
   description: "Transform your Google Calendar and iCal data into beautiful insights. Track activities, analyze habits, and discover how you spend your time with detailed statistics and interactive charts.",
+  keywords: ["calendar stats", "calendar statistics", "iCal stats", "ical analyzer", "iCal trends", "calendar analytics", "Google Calendar stats", "iCal statistics", "calendar insights", "calendar data analysis", "calendar dashboard", "time tracking", "time analysis", "calendar metrics", "schedule analysis", "productivity tracker", "time management", "calendar visualization", "activity tracking", "calendar patterns", "productivity analytics", "time spent analysis", "calendar trends", "Google Calendar dashboard", "calendar reporting", "how I spend my time", "calendar history"],
+  authors: [{ name: "MyCalendarStats" }],
+  metadataBase: new URL('https://mycalendarstats.com'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "MyCalendarStats - Visualize Your Time",
+    description: "Transform your calendar data into beautiful insights and discover how you spend your time.",
+    type: "website",
+    url: "https://mycalendarstats.com",
+    siteName: "MyCalendarStats",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MyCalendarStats - Visualize Your Time",
+    description: "Transform your calendar data into beautiful insights and discover how you spend your time.",
+  },
 };
 
 export default function RootLayout({
@@ -21,8 +39,28 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "MyCalendarStats",
+    "applicationCategory": "ProductivityApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "operatingSystem": "Web Browser",
+    "description": "Transform your Google Calendar and iCal data into beautiful insights. Track activities, analyze habits, and discover how you spend your time.",
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className={`${urbanist.className} antialiased`}>
         <FilterProvider>
           <EventsProvider>

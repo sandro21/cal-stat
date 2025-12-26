@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import Head from "next/head";
 
 export default function PrivacyPage() {
   const router = useRouter();
